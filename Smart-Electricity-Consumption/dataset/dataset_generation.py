@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
 import random
+
 #Using seed to make data reproducible
 random.seed(42)
 np.random.seed(42)
 
+#Making 500 records of data
 new_record = 500
 
 #defining categries
@@ -19,12 +21,14 @@ day_types_prob=[0.70,0.20,0.10]
 
 data=[]
 
+#Using loop to create random data for each record
 for _ in range(new_record):
     house_type = np.random.choice(house_types, p=house_prob)
     
     family_members = np.random.choice(
         [1,2,3,4,5,6,7,8],
         p=[0.05,0.15,0.20,0.20,0.20,0.10,0.05,0.05])
+
 
     if house_type == 'Apartment':
         rooms = random.randint(2,4)
