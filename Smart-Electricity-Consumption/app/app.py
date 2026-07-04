@@ -228,7 +228,7 @@ if predict_button:
             "⭐ Efficiency",
             efficiency
         )
-    # Recommendation System
+    # Recommendation System for model results
     st.divider()
 
     st.subheader("💡 Energy Saving Recommendations")
