@@ -1,6 +1,6 @@
 import streamlit as st
-import joblib
 import pandas as pd
+from predictor import ElectricityPredictor
 
 # Page Configuration
 
@@ -24,27 +24,13 @@ This system predicts your household's daily electricity consumption and provides
 personalized recommendations to help reduce electricity costs.
 """)
 
-
 st.divider()
 
-# Load Model
-
 try:
-    model = joblib.load(
-        "C:\\Users\\HP\OneDrive\\Desktop\\Intern project\\Smart-Electricity-Consumption\\models\\best_model.pkl")
-
-    scaler = joblib.load(
-        "C:\\Users\\HP\\OneDrive\\Desktop\\Intern project\\Smart-Electricity-Consumption\\models\\scaler.pkl"
-    )
-
-    encoder = joblib.load(
-        "C:\\Users\\HP\\OneDrive\\Desktop\\Intern project\\Smart-Electricity-Consumption\\models\\encoder.pkl"
-    )
-
-    st.success("✅ Models Loaded Successfully!")
-
+    predictor = ElectricityPredictor()
+    st.success('Model Loaded Successfully')
 except Exception as e:
-    st.error(f"Error loading model: {e}")
+    st.error(f"Error loading model:{e}")
 
 # Household Information
 
@@ -177,22 +163,8 @@ if predict_button:
 
     }])
 
-    categorical_cols = [
+    daily_consumption= predictor.predict(input_data)
 
-        "House_Type",
-        "Season",
-        "Day_Type",
-        "Work_From_Home",
-        "Solar_Panels"
-
-    ]
-
-    for column in categorical_cols:
-        input_data[column] = encoder[column].transform(input_data[column])
-
-    scaled_data = scaler.transform(input_data)
-    prediction = model.predict(scaled_data)
-    daily_consumption = round(prediction[0], 2)
     monthly_consumption = round(daily_consumption * 30, 2)
     electricity_rate = 65
     monthly_bill = round(monthly_consumption * electricity_rate, 2)
