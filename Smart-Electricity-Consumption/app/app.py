@@ -10,6 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # Title
 
 st.title("⚡ Smart Electricity Consumption Prediction System")
@@ -22,6 +23,7 @@ st.info("""
 This system predicts your household's daily electricity consumption and provides
 personalized recommendations to help reduce electricity costs.
 """)
+
 
 st.divider()
 
