@@ -1,19 +1,29 @@
-import joblib
-import pandas as pd
 import os
+import joblib
+
 
 class ElectricityPredictor:
-    def __init__(self):
-        Base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        Model_Path = os.path.join(Base_dir , 'models','best_model.pkl')
-        Scaler_path = os.path.join(Base_dir , 'models' , 'scaler.pkl') 
-        Encoder_path = os.path.join(Base_dir , 'models' , 'encoder.pkl')
 
-        self.model= joblib.load(Model_Path)
-        self.model = joblib.load(Scaler_path)
-        self.model = joblib.load(Encoder_path)
-    
-    def preprocess (self , input_data):
+    def __init__(self):
+
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        self.model = joblib.load(
+            os.path.join(base_dir, "models", "best_model.pkl")
+        )
+
+        self.scaler = joblib.load(
+            os.path.join(base_dir, "models", "scaler.pkl")
+        )
+
+        self.encoder = joblib.load(
+            os.path.join(base_dir, "models", "encoder.pkl")
+        )
+
+    def preprocess(self, input_data):
+
+        data = input_data.copy()
+
         categorical_columns = [
             "House_Type",
             "Season",
@@ -23,12 +33,14 @@ class ElectricityPredictor:
         ]
 
         for column in categorical_columns:
-            input_data[column] = self.encoder[column].transform(input_data[column])
+            data[column] = self.encoder[column].transform(data[column])
 
-        scaled_data = self.scaler.tranform(input_data)
-        return scaled_data
-    
+        return self.scaler.transform(data)
+
     def predict(self, input_data):
-        processed_data = self.preprocess(input_data)
-        prediction = self.model.predict(processed_data)
-        return round(float(prediction[0],2))
+
+        processed = self.preprocess(input_data)
+
+        prediction = self.model.predict(processed)
+
+        return round(float(prediction[0]), 2)
