@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from predictor import ElectricityPredictor
+from recommendation import get_recommendations
+from utils import (calculate_monthly_consumption,calculate_monthly_bill,get_efficiency_score,format_currency,format_energy)
 
 # Page Configure
 st.set_page_config(
@@ -156,98 +158,61 @@ if st.button("⚡ Predict Electricity Consumption", use_container_width=True):
     }])
 
     daily_consumption = predictor.predict(input_data)
-    monthly_consumption = round(daily_consumption * 30, 2)
+    monthly_consumption = calculate_monthly_consumption(
+        daily_consumption
+    )
 
-    electricity_rate = 65
+    monthly_bill = calculate_monthly_bill(
+        monthly_consumption
+    )
 
-    monthly_bill = round(monthly_consumption * electricity_rate, 2)
+    efficiency = get_efficiency_score(
+        daily_consumption
+    )
+    st.divider()
+    st.success("Prediction Completed Successfully!")
 
-    if daily_consumption < 15:
-        efficiency = "Excellent ⭐⭐⭐⭐⭐"
-
-    elif daily_consumption < 25:
-        efficiency = "Good ⭐⭐⭐⭐"
-
-    elif daily_consumption < 35:
-        efficiency = "Average ⭐⭐⭐"
-
-    else:
-        efficiency = "High Consumption ⭐⭐"
+# ==========================
+# Prediction Dashboard
+# ==========================
 
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric(
             "⚡ Daily Usage",
-            f"{daily_consumption} kWh"
-        )
+            format_energy(daily_consumption)
+    )
 
     with col2:
         st.metric(
             "📅 Monthly Usage",
-            f"{monthly_consumption} kWh"
-        )
+            format_energy(monthly_consumption)
+    )
 
     with col3:
         st.metric(
             "💰 Monthly Bill",
-            f"Rs. {monthly_bill:,.0f}"
-        )
+            format_currency(monthly_bill)
+    )
 
     with col4:
         st.metric(
             "⭐ Efficiency",
             efficiency
-        )
-    st.divider()
-
+    )
     st.subheader("💡 Personalized Energy Saving Recommendations")
 
-    recommendations = []
-
-    estimated_savings = 0
-
-    if ac_hours > 8:
-        recommendations.append(
-            "❄️ Reduce AC usage by 1–2 hours to save electricity."
-        )
-        estimated_savings += 800
-
-    if lighting > 8:
-        recommendations.append(
-            "💡 Replace traditional bulbs with LED lights."
-    )
-    estimated_savings += 400
-
-    if washing_machine > 1.5:
-        recommendations.append(
-            "🧺 Run the washing machine during off-peak hours."
-    )
-    estimated_savings += 300
-
-    if solar_panels == "No":
-        recommendations.append(
-            "☀️ Installing solar panels can significantly reduce your monthly bill."
-    )
-    estimated_savings += 2500
-
-    if work_from_home == "Yes":
-        recommendations.append(
-            "💻 Turn off idle electronics while working from home."
-    )
-    estimated_savings += 200
-
-    if recommendations:
-
-        for rec in recommendations:
-            st.success(rec)
-
-    else:
-
-        st.success(
-            "🎉 Excellent! Your household is already energy efficient."
+    recommendations, estimated_savings = get_recommendations(
+        ac_hours=ac_hours,
+        lighting_hours=lighting,
+        washing_machine_hours=washing_machine,
+        solar_panels=solar_panels,
+        work_from_home=work_from_home
     )
 
+    for recommendation in recommendations:
+        st.success(recommendation)
     st.info(
         f"💰 Estimated Monthly Savings: Rs. {estimated_savings:,.0f}"
     )
