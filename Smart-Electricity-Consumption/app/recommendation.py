@@ -67,7 +67,6 @@ def get_recommendations(
         )
         estimated_savings += 200
 
-    # If no recommendation is needed
     if len(recommendations) == 0:
         recommendations.append(
             "🎉 Excellent! Your household is already energy efficient."

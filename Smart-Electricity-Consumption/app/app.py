@@ -172,9 +172,7 @@ if st.button("⚡ Predict Electricity Consumption", use_container_width=True):
     st.divider()
     st.success("Prediction Completed Successfully!")
 
-# ==========================
 # Prediction Dashboard
-# ==========================
 
     col1, col2, col3, col4 = st.columns(4)
 
