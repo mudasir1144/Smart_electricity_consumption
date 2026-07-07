@@ -161,15 +161,23 @@ The application provides:
 
 ---
 
-# 📷 Application Preview
+## 📷 Application Screenshots
 
-Add screenshots of your application here before submitting the project.
+### Home Page
 
-Example:
+![Home Page](screenshots/home_page.png)
 
-- Home Page
-- Prediction Dashboard
-- Recommendation Section
+---
+
+### Prediction Result
+
+![Prediction Result](screenshots/prediction_result.png)
+
+---
+
+### Recommendations
+
+![Recommendations](screenshots/recommendation_results.png)
 
 ---
 
